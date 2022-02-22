@@ -12,7 +12,7 @@ public abstract class DrivetrainInterface extends SubsystemBase {
 
   public abstract DifferentialDriveWheelSpeeds getWheelSpeeds();
 
-  public abstract void resetOdometry();
+  public abstract void resetOdometry(Pose2d pose);
 
   public abstract void applyLeftRightVoltage(double leftVolts, double rightVolts);
 

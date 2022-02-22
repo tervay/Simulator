@@ -8,6 +8,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
@@ -48,8 +50,6 @@ public class DrivetrainSim extends DrivetrainInterface {
   DifferentialDriveOdometry odometry =
       new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
-  private double toApplyLeft = 0, toApplyRight = 0;
-
   public DrivetrainSim() {
     left1.getEncoder().setPositionConversionFactor(Constants.DrivetrainConstants.distancePerPulse);
     right1.getEncoder().setPositionConversionFactor(Constants.DrivetrainConstants.distancePerPulse);
@@ -71,6 +71,20 @@ public class DrivetrainSim extends DrivetrainInterface {
         getRightEncoder().getPosition());
 
     field.setRobotPose(odometry.getPoseMeters());
+
+    SmartDashboard.putData(
+        "Odometry",
+        new Sendable() {
+          @Override
+          public void initSendable(SendableBuilder builder) {
+            builder.addDoubleProperty(
+                "X", () -> odometry.getPoseMeters().getTranslation().getX(), (z) -> {});
+            builder.addDoubleProperty(
+                "Y", () -> odometry.getPoseMeters().getTranslation().getY(), (z) -> {});
+            builder.addDoubleProperty(
+                "H", () -> odometry.getPoseMeters().getRotation().getDegrees(), (z) -> {});
+          }
+        });
   }
 
   @Override
@@ -100,15 +114,15 @@ public class DrivetrainSim extends DrivetrainInterface {
 
   @Override
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    // TODO Auto-generated method stub
     return new DifferentialDriveWheelSpeeds(
         getLeftEncoder().getVelocity(), getRightEncoder().getVelocity());
   }
 
   @Override
-  public void resetOdometry() {
-    // TODO Auto-generated method stub
-
+  public void resetOdometry(Pose2d pose) {
+    odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+    getLeftEncoder().setPosition(0);
+    getRightEncoder().setPosition(0);
   }
 
   @Override

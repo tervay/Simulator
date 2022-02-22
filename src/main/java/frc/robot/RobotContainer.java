@@ -10,14 +10,15 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.interfaces.DrivetrainInterface;
 import frc.robot.subsystems.simImplementations.DrivetrainSim;
+import frc.robot.util.PoseTrigger;
 import frc.robot.util.Ramsete;
 import java.util.List;
 
 public class RobotContainer {
-
   DrivetrainInterface drivetrain = new DrivetrainSim();
   Joystick joystick = new Joystick(0);
 
@@ -48,15 +49,18 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return Ramsete.makeRamseteCommand(
-        Ramsete.makeTrajectory(
-            List.of(
-                new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-                new Pose2d(3, 0, Rotation2d.fromDegrees(45))),
-            0,
-            0,
-            5,
-            false),
+    return Ramsete.makeDynamicCommand(
+        new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+        List.of(
+            new PoseTrigger(new Pose2d(2, 0, Rotation2d.fromDegrees(0)))
+                .within(0.25)
+                .run(new PrintCommand("1")),
+            new PoseTrigger(new Pose2d(5, 2, Rotation2d.fromDegrees(45)))
+                .within(0.25)
+                .run(new PrintCommand("2"))),
+        new Pose2d(7, 2, Rotation2d.fromDegrees(0)),
+        5,
+        false,
         drivetrain);
   }
 }

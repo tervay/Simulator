@@ -43,7 +43,7 @@ public final class Constants {
     public static double kS = 0.2;
     public static double kV = 2.3;
     public static double kA = 0.01;
-    public static double kP = 1;
+    public static double kP = 0.5;
 
     public static SimpleMotorFeedforward ramseteFF = new SimpleMotorFeedforward(kS, kV, kA);
   }
