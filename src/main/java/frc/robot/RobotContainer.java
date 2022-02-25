@@ -55,10 +55,10 @@ public class RobotContainer {
             new PoseTrigger(new Pose2d(2, 0, Rotation2d.fromDegrees(0)))
                 .within(0.25)
                 .run(new PrintCommand("1")),
-            new PoseTrigger(new Pose2d(5, 2, Rotation2d.fromDegrees(45)))
+            new PoseTrigger(new Pose2d(3, 0, Rotation2d.fromDegrees(0)))
                 .within(0.25)
                 .run(new PrintCommand("2"))),
-        new Pose2d(7, 2, Rotation2d.fromDegrees(0)),
+        new Pose2d(10, 0, Rotation2d.fromDegrees(0)),
         5,
         false,
         drivetrain);

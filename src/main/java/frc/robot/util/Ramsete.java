@@ -130,29 +130,20 @@ public class Ramsete {
       double maxVelocity,
       boolean reversed,
       DrivetrainInterface drivetrain) {
-    SequentialCommandGroup commands = new SequentialCommandGroup();
     var trajectories =
         makeTrajectories(startingPoint, poseTriggers, endingPoint, maxVelocity, reversed);
+
+    SequentialCommandGroup commands =
+        new SequentialCommandGroup(
+            new InstantCommand(
+                () -> {
+                  drivetrain.resetOdometry(trajectories.get(0).getInitialPose());
+                }));
 
     int i = 0;
     for (Trajectory t : trajectories) {
       ParallelCommandGroup parallelCommandGroup =
           new ParallelCommandGroup(makeRamseteCommand(t, drivetrain));
-
-      for (State s : t.getStates()) {
-        System.out.println(
-            s.timeSeconds
-                + ","
-                + s.poseMeters.getX()
-                + ","
-                + s.poseMeters.getY()
-                + ","
-                + s.poseMeters.getRotation().getDegrees()
-                + ","
-                + s.velocityMetersPerSecond);
-      }
-
-      System.out.println("-----------");
 
       if (i < poseTriggers.size()) {
         parallelCommandGroup.addCommands(poseTriggers.get(i).command);
@@ -166,6 +157,10 @@ public class Ramsete {
   }
 
   public static String stringifyPoses(List<Pose2d> poses) {
-    return poses.stream().map(e -> e.toString()).reduce(" / ", String::concat);
+    String s = "";
+    for (Pose2d p : poses) {
+      s += (p.toString()) + "\n";
+    }
+    return s;
   }
 }

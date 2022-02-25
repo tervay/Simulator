@@ -123,6 +123,7 @@ public class DrivetrainSim extends DrivetrainInterface {
     odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
     getLeftEncoder().setPosition(0);
     getRightEncoder().setPosition(0);
+    drivetrainSim.setPose(pose);
   }
 
   @Override
